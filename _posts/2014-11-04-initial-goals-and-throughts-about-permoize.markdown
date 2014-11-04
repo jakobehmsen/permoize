@@ -25,6 +25,10 @@ Memoizer memoizer = ...; // Initialization of a Memoizer
 String name = memoizer.recollect("readName", () -> gets());
 puts(name);
 ```
+```
+String name = memoizer.recollect("readName", () -> gets());
+puts(name);
+```
 
 In this example, a Memoizer is initialized (somehow). In addition, the Memoizer.recollect method is invoked supplied with a name and a conditional producer of that particular value.
 

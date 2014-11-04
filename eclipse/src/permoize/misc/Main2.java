@@ -49,9 +49,15 @@ public class Main2 {
 					String[] arguments = new String[requestSplit.length - 1];
 					System.arraycopy(requestSplit, 1, arguments, 0, arguments.length);
 					
-					if(selector.equals("new")) {
+					switch(selector) {
+					case "new":
 						String name = arguments[0];
 						((DefaultListModel<String>)names.getModel()).addElement(name);
+						break;
+					case "delete":
+						int index = Integer.parseInt(arguments[0]);
+						((DefaultListModel<String>)names.getModel()).remove(index);
+						break;
 					}
 				} catch (DontCollectException e) {
 					break;
@@ -81,10 +87,22 @@ public class Main2 {
 				}
 			}
 		});
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(e -> {
+			int selectedIndex = names.getSelectedIndex();
+			if(selectedIndex != -1) {
+				try {
+					requestStream.put("delete;" + selectedIndex);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		JPanel topPanel = new JPanel();
 		topPanel.add(new JLabel("Name"));
 		topPanel.add(txtName);
 		topPanel.add(btnAdd);
+		topPanel.add(btnDelete);
 		
 		frame.setLayout(new BorderLayout());
 		

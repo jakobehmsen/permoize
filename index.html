@@ -1,60 +1,19 @@
-<!DOCTYPE html>
-<html style="height: 100%; margin-top:0px; margin-bottom:0px; margin-left: 0px; margin-right: 0px;">
-	<head>
-		<title>Permoize's project page</title>
-		<style type="text/css">
-			html {
-				height: 100%;
-			}
-			body {  
-				font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-				margin-left: auto;
-				margin-right: auto;
-				max-width: 1024px;
-				background: linear-gradient(#6CC, #7AF);
-				height: 100%
-				margin-bottom: 0;
-				background-repeat: no-repeat;
-				background-attachment: fixed;
-			}
-			
-			.block1 {background: linear-gradient(#333366, #445599);}
-			
-			.general {
-				border-width: 3px;
-			}
-			
-			.title {
-				font-size: 25px;
-			}
-			
-			.content {
-				font-size: 18px;
-			}
-			
-			@media only screen and (max-device-width: 480px){
-				.title {
-					font-size: 35px;
-				}
-				
-				.content {
-					font-size: 25px;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<div style="margin: 15px;" class="title"> 
-			<div style="font-weight: 900; text-align:center; padding: 6px; color: #F5F5F5; border-color: #1C1C1C; border-style: solid; border-radius: 12px 12px 0px 0px; border-bottom-width: 0;" class="general block1">
-				<div>Permoize's project page</div>
-				<div></div>
-			</div>
-			<div style="font-weight: 900; padding: 6px; background-color: #F5F5F5; color: #1C1C1C; border-color: #1C1C1C; border-style: solid; border-radius: 0px 0px 12px 12px;" class="general content">
-				<div>
-					A Java library for persistent memoization - 
-					<a style="font-style:oblique; " href="https://github.com/jakobehmsen/permoize">Hosted on GitHub</a>
-				</div>
-			</div>
-		</div>
-	</body>
-</html>
+---
+layout: default
+---
+
+<div class="home">
+
+  <ul class="post-list">
+    {% for post in site.posts %}
+      <li>
+        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+
+        <h2>
+          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+        </h2>
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>

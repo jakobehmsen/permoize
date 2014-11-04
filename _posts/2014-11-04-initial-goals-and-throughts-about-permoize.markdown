@@ -17,7 +17,7 @@ In this example, `$readName` is used as a prefix for the `gets` expression which
 
 Calling this deterministic may be stretching the term's usual meaning too much but I hope the example and its purpose makes a little sense.
 
-Now, back to Permoize. The memoization construct in Duro is used as the main inspiration for building a simple Java library with the same purposes as summarized above. Instead of having memoization as an innate part of Java, a simple Java interface is designed and implemented in Permoize. Here, the most important interface is `Memoizer`. Lets look at an example corresponding to the above example in Duro:
+Now, back to Permoize. The memoization construct in Duro is used as the main inspiration for building a simple Java library with the same purposes as summarized above. Instead of having memoization as an innate part of Java, a simple Java interface is designed and implemented. Here, the most important interface is `Memoizer`. Lets look at an example corresponding to the above example in Duro:
 
 ```Java
 Memoizer memoizer = ...; // Initialization of a Memoizer

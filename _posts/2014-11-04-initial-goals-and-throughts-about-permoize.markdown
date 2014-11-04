@@ -28,4 +28,4 @@ puts(name);
 
 In this example, a Memoizer is initialized (somehow). In addition, the Memoizer.recollect method is invoked supplied with a name and a conditional producer of that particular value.
 
-So, how can Permoize be used for generel persistence in larger applications which are often event based which usually implies a push oriented architecture? This is an issue which is to investigated further and will be part of future posts.
+So, how can Permoize be used for generel persistence in larger applications which are often event based which usually implies a push oriented architecture? This is an issue which is to be investigated further and will be part of future posts.

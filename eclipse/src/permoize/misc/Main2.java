@@ -32,6 +32,7 @@ public class Main2 {
 		names.setModel(new DefaultListModel<String>());
 		
 		Thread streamProcessor = new Thread(() -> {
+			System.out.println("Stream processor started.");
 			while(true) {
 				try {
 					System.out.println("Waiting for request...");
@@ -50,16 +51,22 @@ public class Main2 {
 					System.arraycopy(requestSplit, 1, arguments, 0, arguments.length);
 					
 					switch(selector) {
-					case "new":
+					case "new": {
 						String name = arguments[0];
 						((DefaultListModel<String>)names.getModel()).addElement(name);
 						break;
-					case "delete":
+					} case "update": {
+						String name = arguments[0];
+						int index = Integer.parseInt(arguments[1]);
+						((DefaultListModel<String>)names.getModel()).set(index, name);
+						break;
+					} case "delete":
 						int index = Integer.parseInt(arguments[0]);
 						((DefaultListModel<String>)names.getModel()).remove(index);
 						break;
 					}
 				} catch (DontCollectException e) {
+					System.out.println("Stream processor stopped.");
 					break;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -87,6 +94,22 @@ public class Main2 {
 				}
 			}
 		});
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(e -> {
+			int selectedIndex = names.getSelectedIndex();
+			if(selectedIndex != -1) {
+				String name = txtName.getText();
+				txtName.setText("");
+				
+				if(name.trim().length() > 0) {
+					try {
+						requestStream.put("update;" + name + ";" + selectedIndex);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(e -> {
 			int selectedIndex = names.getSelectedIndex();
@@ -102,6 +125,7 @@ public class Main2 {
 		topPanel.add(new JLabel("Name"));
 		topPanel.add(txtName);
 		topPanel.add(btnAdd);
+		topPanel.add(btnUpdate);
 		topPanel.add(btnDelete);
 		
 		frame.setLayout(new BorderLayout());

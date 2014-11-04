@@ -39,6 +39,8 @@ public class CommonMemoizer implements Memoizer {
 				stream.put(value);
 				
 				return value;
+			} catch(DontCollectException e) {
+				throw e;
 			} catch(Exception e) {
 				stream.put(new ThrownException(e));
 				

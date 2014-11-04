@@ -1,17 +1,31 @@
 package permoize;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class CommonMemoizeContainer implements MemoizeContainer {
 	private MemoizeEntryList recollections;
 	private Hashtable<Object, Integer> tracks = new Hashtable<Object, Integer>();
+	private ArrayList<RecollectListener> listeners = new ArrayList<RecollectListener>();
 	
 	public CommonMemoizeContainer(MemoizeEntryList recollections) {
 		this.recollections = recollections;
 	}
+	
+	@Override
+	public void addListener(RecollectListener listener) {
+		listeners.add(listener);
+	}
+	
+	@Override
+	public void removeListener(RecollectListener listener) {
+		listeners.remove(listener);
+	}
 
 	@Override
 	public MemoizeStream getStream(Object tag) {
+		listeners.forEach(l -> l.startedRecollecting(tag));
+		
 		return new MemoizeStream() {
 			private MemoizeEntry next = deriveNext();
 			
@@ -43,6 +57,9 @@ public class CommonMemoizeContainer implements MemoizeContainer {
 				MemoizeEntry prev = next;
 				
 				next = deriveNext();
+				
+				if(next == null)
+					listeners.forEach(l -> l.finishedRecollecting(tag));
 				
 				return prev.value;
 			}

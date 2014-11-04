@@ -14,12 +14,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import permoize.CommonMemoizeContainer;
 import permoize.CommonMemoizer;
 import permoize.DontCollectException;
+import permoize.MemoizeContainer;
 import permoize.Memoizer;
+import permoize.RecollectListener;
 import permoize.StreamMemoizeEntryList;
 
 public class Main2 {
@@ -27,7 +30,8 @@ public class Main2 {
 		// Create request stream processor, where each request is memoized
 		
 		BlockingQueue<String> requestStream = new LinkedBlockingDeque<String>();
-		Memoizer memoizer = new CommonMemoizer(new CommonMemoizeContainer(new StreamMemoizeEntryList("me2.mor")));
+		MemoizeContainer memoizeContainer = new CommonMemoizeContainer(new StreamMemoizeEntryList("me2.mor"));
+		Memoizer memoizer = new CommonMemoizer(memoizeContainer);
 		JList<String> names = new JList<String>();
 		names.setModel(new DefaultListModel<String>());
 		
@@ -74,10 +78,9 @@ public class Main2 {
 			}
 		});
 		
-		streamProcessor.start();
-		
 		// Create GUI through which the requests are made
-		JFrame frame = new JFrame("Contact list");
+		String title = "Contact list";
+		JFrame frame = new JFrame();
 		
 		JTextField txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(150, txtName.getPreferredSize().height));
@@ -85,6 +88,7 @@ public class Main2 {
 		btnAdd.addActionListener(e -> {
 			String name = txtName.getText();
 			txtName.setText("");
+			txtName.requestFocusInWindow();
 			
 			if(name.trim().length() > 0) {
 				try {
@@ -131,17 +135,33 @@ public class Main2 {
 		frame.setLayout(new BorderLayout());
 		
 		frame.add(topPanel, BorderLayout.NORTH);
-		frame.add(names, BorderLayout.CENTER);
+		frame.add(new JScrollPane(names), BorderLayout.CENTER);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(800, 600);
+		frame.setLocationRelativeTo(null);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				streamProcessor.interrupt();
 			}
 		});
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
+		
+		frame.setEnabled(false);
 		frame.setVisible(true);
+		frame.setTitle(title + " - Loading...");
+		
+		memoizeContainer.addListener(new RecollectListener() {
+			@Override
+			public void startedRecollecting(Object tag) { }
+			
+			@Override
+			public void finishedRecollecting(Object tag) {
+				frame.setTitle(title);
+				frame.setEnabled(true);
+			}
+		});
+		
+		streamProcessor.start();
 	}
 }

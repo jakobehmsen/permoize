@@ -4,7 +4,7 @@ title:  "Initial goals and thoughts about Permoize"
 date:   2014-11-04 07:21:38
 categories: jekyll update
 ---
-Permoize is an offspin project from [another Github project named Duro](https://github.com/jakobehmsen/duro). Duro is a project concerned with attempting to develop a runtime engine for persistent processes. In this project, a special kind of expression is supported, which is used to memoize the runtime value of that expression in a persistent manner. Explained pedagogically, this can be used to turn otherwise non-deterministic expressions into deterministic expressions. 
+Permoize is an offspin project from [another Github project named Duro](https://github.com/jakobehmsen/duro). Duro is a project concerned with attempting to develop a runtime for persistent processes. In this project, a special kind of expression is supported, which is used to memoize the runtime value of that expression in a persistent manner. Explained pedagogically, this can be used to turn otherwise non-deterministic expressions into deterministic expressions. 
 
 For instance, assume `gets` is an expression which reads a single line entered from an end user and `puts` is an expression which writes a single line. Then the following example illustrate how to make the runtime value of `gets` deterministic:
 

@@ -1,4 +1,4 @@
-package permoize.misc;
+package permoize.examples.contactlist;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -25,7 +25,7 @@ import permoize.Memoizer;
 import permoize.RecollectListener;
 import permoize.StreamMemoizeEntryList;
 
-public class Main2 {
+public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// Create request stream processor, where each request is memoized
 		

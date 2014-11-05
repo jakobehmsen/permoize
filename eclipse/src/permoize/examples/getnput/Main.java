@@ -1,4 +1,4 @@
-package permoize.misc;
+package permoize.examples.getnput;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

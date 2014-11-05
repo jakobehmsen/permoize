@@ -22,24 +22,34 @@ import permoize.CommonMemoizer;
 import permoize.DontCollectException;
 import permoize.MemoizeContainer;
 import permoize.Memoizer;
-import permoize.RecollectListener;
+import permoize.StartEndMemoizeContainer;
 import permoize.StreamMemoizeEntryList;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// Create request stream processor, where each request is memoized
 		
+		String start = "START";
+		String end = "END";
+		
 		BlockingQueue<String> requestStream = new LinkedBlockingDeque<String>();
-		MemoizeContainer memoizeContainer = new CommonMemoizeContainer(new StreamMemoizeEntryList("me2.mor"));
+		MemoizeContainer memoizeContainer = new StartEndMemoizeContainer(start, end, new CommonMemoizeContainer(new StreamMemoizeEntryList("me2.mor")));
 		Memoizer memoizer = new CommonMemoizer(memoizeContainer);
+
+		String title = "Contact list";
+		JFrame frame = new JFrame();
 		JList<String> names = new JList<String>();
 		names.setModel(new DefaultListModel<String>());
 		
 		Thread streamProcessor = new Thread(() -> {
+			boolean recollecting = true;
+			
 			System.out.println("Stream processor started.");
 			while(true) {
 				try {
-					System.out.println("Waiting for request...");
+					if(!recollecting)
+						System.out.println("Waiting for request...");
+					
 					String request = memoizer.recollect("request", () -> {
 						try {
 							return requestStream.take();
@@ -47,7 +57,9 @@ public class Main {
 							throw new DontCollectException();
 						}
 					});
-					System.out.println("Received request: " + request);
+					
+					if(!recollecting)
+						System.out.println("Received request: " + request);
 					
 					String[] requestSplit = request.split(";");
 					String selector = requestSplit[0];
@@ -64,10 +76,21 @@ public class Main {
 						int index = Integer.parseInt(arguments[1]);
 						((DefaultListModel<String>)names.getModel()).set(index, name);
 						break;
-					} case "delete":
+					} case "delete": {
 						int index = Integer.parseInt(arguments[0]);
 						((DefaultListModel<String>)names.getModel()).remove(index);
 						break;
+					} case "START": {
+						recollecting = true;
+						System.out.println("Started recollecting...");
+						break;
+					} case "END": {
+						recollecting = false;
+						System.out.println("Finished recollecting.");
+						frame.setTitle(title);
+						frame.setEnabled(true);
+						break;
+					}
 					}
 				} catch (DontCollectException e) {
 					System.out.println("Stream processor stopped.");
@@ -79,8 +102,6 @@ public class Main {
 		});
 		
 		// Create GUI through which the requests are made
-		String title = "Contact list";
-		JFrame frame = new JFrame();
 		
 		JTextField txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(150, txtName.getPreferredSize().height));
@@ -153,17 +174,6 @@ public class Main {
 		frame.setEnabled(false);
 		frame.setVisible(true);
 		frame.setTitle(title + " - Loading...");
-		
-		memoizeContainer.addListener(new RecollectListener() {
-			@Override
-			public void startedRecollecting(Object tag) { }
-			
-			@Override
-			public void finishedRecollecting(Object tag) {
-				frame.setTitle(title);
-				frame.setEnabled(true);
-			}
-		});
 		
 		streamProcessor.start();
 	}

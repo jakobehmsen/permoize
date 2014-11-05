@@ -40,8 +40,8 @@ public class Main {
 
 		String title = "Contact list";
 		JFrame frame = new JFrame();
-		JList<String> names = new JList<String>();
-		names.setModel(new DefaultListModel<String>());
+		JList<String> contacts = new JList<String>();
+		contacts.setModel(new DefaultListModel<String>());
 		
 		Thread streamProcessor = new Thread(() -> {
 			boolean recollecting = true;
@@ -77,16 +77,16 @@ public class Main {
 					switch(selector) {
 					case "new": {
 						String name = arguments[0];
-						((DefaultListModel<String>)names.getModel()).addElement(name);
+						((DefaultListModel<String>)contacts.getModel()).addElement(name);
 						break;
 					} case "update": {
 						String name = arguments[0];
 						int index = Integer.parseInt(arguments[1]);
-						((DefaultListModel<String>)names.getModel()).set(index, name);
+						((DefaultListModel<String>)contacts.getModel()).set(index, name);
 						break;
 					} case "delete": {
 						int index = Integer.parseInt(arguments[0]);
-						((DefaultListModel<String>)names.getModel()).remove(index);
+						((DefaultListModel<String>)contacts.getModel()).remove(index);
 						break;
 					} case "START": {
 						recollecting = true;
@@ -113,8 +113,8 @@ public class Main {
 		// - a Swing GUI through which the requests are made from events
 		JTextField txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(150, txtName.getPreferredSize().height));
-		names.addListSelectionListener(e -> {
-			String name = ((DefaultListModel<String>)names.getModel()).get(e.getFirstIndex());
+		contacts.addListSelectionListener(e -> {
+			String name = ((DefaultListModel<String>)contacts.getModel()).get(e.getFirstIndex());
 			txtName.setText(name);
 		});
 		JButton btnAdd = new JButton("Add");
@@ -133,7 +133,7 @@ public class Main {
 		});
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(e -> {
-			int selectedIndex = names.getSelectedIndex();
+			int selectedIndex = contacts.getSelectedIndex();
 			if(selectedIndex != -1) {
 				String name = txtName.getText();
 				
@@ -148,7 +148,7 @@ public class Main {
 		});
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(e -> {
-			int selectedIndex = names.getSelectedIndex();
+			int selectedIndex = contacts.getSelectedIndex();
 			if(selectedIndex != -1) {
 				try {
 					requestStream.put("delete;" + selectedIndex);
@@ -167,7 +167,7 @@ public class Main {
 		frame.setLayout(new BorderLayout());
 		
 		frame.add(topPanel, BorderLayout.NORTH);
-		frame.add(new JScrollPane(names), BorderLayout.CENTER);
+		frame.add(new JScrollPane(contacts), BorderLayout.CENTER);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 600);

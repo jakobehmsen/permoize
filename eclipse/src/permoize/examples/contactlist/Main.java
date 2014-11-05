@@ -84,6 +84,10 @@ public class Main {
 		
 		JTextField txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(150, txtName.getPreferredSize().height));
+		names.addListSelectionListener(e -> {
+			String name = ((DefaultListModel<String>)names.getModel()).get(e.getFirstIndex());
+			txtName.setText(name);
+		});
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(e -> {
 			String name = txtName.getText();
@@ -103,7 +107,6 @@ public class Main {
 			int selectedIndex = names.getSelectedIndex();
 			if(selectedIndex != -1) {
 				String name = txtName.getText();
-				txtName.setText("");
 				
 				if(name.trim().length() > 0) {
 					try {

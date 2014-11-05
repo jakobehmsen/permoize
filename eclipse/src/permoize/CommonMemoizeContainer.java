@@ -1,6 +1,5 @@
 package permoize;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class CommonMemoizeContainer implements MemoizeContainer {

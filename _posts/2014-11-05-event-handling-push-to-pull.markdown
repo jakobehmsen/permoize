@@ -43,4 +43,8 @@ new Thread(() -> {
 }).start();
 ```
 
+Using this combination, the persisted requests are "replayed" against the puller during each application startup and thus simulates persistance.
+
+This marks the beginning of how to use Permoize for more real applications.
+
 [^1]: For a full example, look at [the simple contact list](https://github.com/jakobehmsen/permoize/tree/master/eclipse/src/permoize/examples/contactlist).

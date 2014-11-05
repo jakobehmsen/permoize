@@ -5,7 +5,9 @@ description: > # this means to ignore newlines until "baseurl:"
   Permoize is a Java library for persistent memoization to be used as an 
   easy persistence mechanism for applications.
 baseurl: "http://jakobehmsen.github.io/permoize/" # the subpath of your site, e.g. /blog/
-url: http://jakobehmsen.github.io # the base hostname & protocol for your site
+#url: http://jakobehmsen.github.io # the base hostname & protocol for your site
 github_username:  jakobehmsen
 
 markdown: redcarpet
+redcarpet:
+  extensions: [footnotes]

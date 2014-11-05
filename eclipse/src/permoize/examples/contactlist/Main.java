@@ -27,13 +27,15 @@ import permoize.StreamMemoizeEntryList;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-		// Create request stream processor, where each request is memoized
+		// Create pusher
+		// - a "request stream processor", where each request is memoized
 		
 		String start = "START";
 		String end = "END";
 		
 		BlockingQueue<String> requestStream = new LinkedBlockingDeque<String>();
-		MemoizeContainer memoizeContainer = new StartEndMemoizeContainer(start, end, new CommonMemoizeContainer(new StreamMemoizeEntryList("me2.mor")));
+		MemoizeContainer memoizeContainer = new StartEndMemoizeContainer(
+			start, end, new CommonMemoizeContainer(new StreamMemoizeEntryList("memoi.zer")));
 		Memoizer memoizer = new CommonMemoizer(memoizeContainer);
 
 		String title = "Contact list";
@@ -54,6 +56,8 @@ public class Main {
 						try {
 							return requestStream.take();
 						} catch(InterruptedException e) {
+							// If the BlockingQueue is interrupted, indicate to the Memoizer that 
+			                // the value shouldn't be collected.
 							throw new DontCollectException();
 						}
 					});
@@ -61,6 +65,10 @@ public class Main {
 					if(!recollecting)
 						System.out.println("Received request: " + request);
 					
+					// Process request
+					// - a request is a string which content separated by semicolons
+					//   - the first item of the content is the selector
+					//   - the remaining items of the content constitutes the arguments
 					String[] requestSplit = request.split(";");
 					String selector = requestSplit[0];
 					String[] arguments = new String[requestSplit.length - 1];
@@ -101,8 +109,8 @@ public class Main {
 			}
 		});
 		
-		// Create GUI through which the requests are made
-		
+		// Create pusher
+		// - a Swing GUI through which the requests are made from events
 		JTextField txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(150, txtName.getPreferredSize().height));
 		names.addListSelectionListener(e -> {

@@ -11,7 +11,7 @@ import permoize.StreamMemoizeEntryList;
 public class Main {
 	public static void main(String[] args) {
 		try {
-			Memoizer memoizer = new CommonMemoizer(new CommonMemoizeContainer(new StreamMemoizeEntryList("me.mor")));
+			Memoizer memoizer = new CommonMemoizer(new CommonMemoizeContainer(new StreamMemoizeEntryList("memoi.zer")));
 			
 			String name = memoizer.recollect("Hello", () -> {
 				System.out.println("Hi there!! Welcome to your first visit to this application!!!");

@@ -78,6 +78,9 @@ public class Main {
 					case "new": {
 						String name = arguments[0];
 						((DefaultListModel<String>)contacts.getModel()).addElement(name);
+						
+						if(!recollecting)
+							contacts.setSelectedIndex(contacts.getModel().getSize() - 1);
 						break;
 					} case "update": {
 						String name = arguments[0];
@@ -87,6 +90,13 @@ public class Main {
 					} case "delete": {
 						int index = Integer.parseInt(arguments[0]);
 						((DefaultListModel<String>)contacts.getModel()).remove(index);
+						
+						if(!recollecting) {
+							if(((DefaultListModel<String>)contacts.getModel()).getSize() > 0) {
+								int selectedIndex = Math.min(((DefaultListModel<String>)contacts.getModel()).getSize() - 1, index);
+								contacts.setSelectedIndex(selectedIndex);
+							}
+						}
 						break;
 					} case "START": {
 						recollecting = true;

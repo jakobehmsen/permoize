@@ -44,9 +44,9 @@ public class Main {
 		contacts.setModel(new DefaultListModel<Contact>());
 		
 		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
-		PusherPullerFactory<String, ContactList> clientServerFactory = new StringRequestPusherPullerFactory<ContactList>(ContactList.class, contactListImpl);
-		Puller<String> puller = clientServerFactory.createPuller(memoizer);
-		ContactList contactListPusher = clientServerFactory.createPusher(puller);
+		PusherPullerFactory<String, ContactList> pusherPullerFactory = new StringRequestPusherPullerFactory<ContactList>(ContactList.class, contactListImpl);
+		Puller<String> puller = pusherPullerFactory.createPuller(memoizer);
+		ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events

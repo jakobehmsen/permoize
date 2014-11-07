@@ -2,10 +2,10 @@ package permoize;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Client<T> {
+public class Pusher<T> {
 	private BlockingQueue<T> requestStream;
 	
-	public Client(BlockingQueue<T> requestStream) {
+	public Pusher(BlockingQueue<T> requestStream) {
 		this.requestStream = requestStream;
 	}
 

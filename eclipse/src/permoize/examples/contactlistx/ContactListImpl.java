@@ -4,13 +4,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
-public class ContactListServer implements ContactList {
+public class ContactListImpl implements ContactList {
 	private boolean recollecting;
 	private String title;
 	private JFrame frame;
 	private JList<Contact> contacts;
 	
-	public ContactListServer(String title, JFrame frame, JList<Contact> contacts) {
+	public ContactListImpl(String title, JFrame frame, JList<Contact> contacts) {
 		this.title = title;
 		this.frame = frame;
 		this.contacts = contacts;

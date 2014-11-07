@@ -2,17 +2,17 @@ package permoize;
 
 import java.util.Arrays;
 
-public class StringRequestClientServerFactory<P> implements ClientServerFactory<String, P> {
+public class StringRequestPusherPullerFactory<P> implements PusherPullerFactory<String, P> {
 	private Class<P> protocol;
 	private P implementer;
 	
-	public StringRequestClientServerFactory(Class<P> protocol, P implementer) {
+	public StringRequestPusherPullerFactory(Class<P> protocol, P implementer) {
 		this.protocol = protocol;
 		this.implementer = implementer;
 	}
 
 	@Override
-	public Server<String> createServer(Memoizer memoizer) {
+	public Puller<String> createPuller(Memoizer memoizer) {
 		ServiceProvider<String> serviceProvider = new ReflectiveServiceProvider<P, String>(
 				implementer,
 			(target, request) -> {
@@ -36,13 +36,13 @@ public class StringRequestClientServerFactory<P> implements ClientServerFactory<
 			}
 		);
 		
-		return new Server<String>(memoizer, serviceProvider);
+		return new Puller<String>(memoizer, serviceProvider);
 	}
 
 	@Override
-	public P createClient(Server<String> server) {
-		Client<String> client = server.newClient();
-		return ReflectiveClient.create(protocol, client, (method, arguments) -> {
+	public P createPusher(Puller<String> server) {
+		Pusher<String> client = server.newClient();
+		return ReflectivePusher.create(protocol, client, (method, arguments) -> {
 			StringBuilder requestBuilder = new StringBuilder();
 			requestBuilder.append(method.getName());
 			for(Object arg: arguments) {

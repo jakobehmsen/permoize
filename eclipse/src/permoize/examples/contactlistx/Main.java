@@ -15,16 +15,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import permoize.ClientServerFactory;
+import permoize.PusherPullerFactory;
 import permoize.CommonMemoizeContainer;
 import permoize.CommonMemoizer;
 import permoize.MemoizeContainer;
 import permoize.Memoizer;
-import permoize.RunningServer;
-import permoize.Server;
+import permoize.RunningPuller;
+import permoize.Puller;
 import permoize.StartEndMemoizeContainer;
 import permoize.StreamMemoizeEntryList;
-import permoize.StringRequestClientServerFactory;
+import permoize.StringRequestPusherPullerFactory;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
@@ -43,10 +43,10 @@ public class Main {
 		JList<Contact> contacts = new JList<Contact>();
 		contacts.setModel(new DefaultListModel<Contact>());
 		
-		ContactListServer contactListServer = new ContactListServer(title, frame, contacts);
-		ClientServerFactory<String, ContactList> clientServerFactory = new StringRequestClientServerFactory<ContactList>(ContactList.class, contactListServer);
-		Server<String> server = clientServerFactory.createServer(memoizer);
-		ContactList contactListClient = clientServerFactory.createClient(server);
+		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
+		PusherPullerFactory<String, ContactList> clientServerFactory = new StringRequestPusherPullerFactory<ContactList>(ContactList.class, contactListImpl);
+		Puller<String> puller = clientServerFactory.createPuller(memoizer);
+		ContactList contactListPusher = clientServerFactory.createPusher(puller);
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events
@@ -74,7 +74,7 @@ public class Main {
 			
 			if(firstName.trim().length() > 0 && lastName.trim().length() > 0 && phoneNumber.trim().length() > 0) {
 				try {
-					contactListClient.add(firstName, lastName, phoneNumber);
+					contactListPusher.add(firstName, lastName, phoneNumber);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -91,7 +91,7 @@ public class Main {
 
 				if(firstName.trim().length() > 0 && lastName.trim().length() > 0 && phoneNumber.trim().length() > 0) {
 					try {
-						contactListClient.update("" + selectedIndex, firstName, lastName, phoneNumber);
+						contactListPusher.update("" + selectedIndex, firstName, lastName, phoneNumber);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -103,7 +103,7 @@ public class Main {
 			int selectedIndex = contacts.getSelectedIndex();
 			if(selectedIndex != -1) {
 				try {
-					contactListClient.delete("" + selectedIndex);
+					contactListPusher.delete("" + selectedIndex);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -133,11 +133,11 @@ public class Main {
 		frame.setVisible(true);
 		frame.setTitle(title + " - Loading...");
 		
-		RunningServer<String> runningServer = RunningServer.start(server);
+		RunningPuller<String> runningPuller = RunningPuller.start(puller);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				runningServer.stop();
+				runningPuller.stop();
 			}
 		});
 	}

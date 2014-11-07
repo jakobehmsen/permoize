@@ -1,5 +1,5 @@
 # Site settings
-title: Permoize's Project Page
+title: Permoize
 email: jakobehmsen.github@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Permoize is a Java library for persistent memoization to be used as an 

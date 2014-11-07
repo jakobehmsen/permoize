@@ -15,16 +15,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import permoize.Client;
+import permoize.ClientServerFactory;
 import permoize.CommonMemoizeContainer;
 import permoize.CommonMemoizer;
 import permoize.MemoizeContainer;
 import permoize.Memoizer;
 import permoize.RunningServer;
 import permoize.Server;
-import permoize.ServiceProvider;
 import permoize.StartEndMemoizeContainer;
 import permoize.StreamMemoizeEntryList;
+import permoize.StringRequestClientServerFactory;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
@@ -43,72 +43,10 @@ public class Main {
 		JList<Contact> contacts = new JList<Contact>();
 		contacts.setModel(new DefaultListModel<Contact>());
 		
-		Server<String> server = new Server<String>(memoizer, new ServiceProvider<String>() {
-			boolean recollecting = true;
-			
-			@Override
-			public void serve(String request) {
-				if(!recollecting)
-					System.out.println("Received request: " + request);
-				
-				// Process request
-				// - a request is a string which content separated by semicolons
-				//   - the first item of the content is the selector
-				//   - the remaining items of the content constitutes the arguments
-				String[] requestSplit = request.split(";");
-				String selector = requestSplit[0];
-				String[] arguments = new String[requestSplit.length - 1];
-				System.arraycopy(requestSplit, 1, arguments, 0, arguments.length);
-				
-				switch(selector) {
-				case "new": {
-					String firstName = arguments[0];
-					String lastName = arguments[1];
-					String phoneNumber = arguments[2];
-					((DefaultListModel<Contact>)contacts.getModel()).addElement(new Contact(firstName, lastName, phoneNumber));
-
-					// Only change selected index if not recollecting
-					if(!recollecting)
-						contacts.setSelectedIndex(contacts.getModel().getSize() - 1);
-					break;
-				} case "update": {
-					int index = Integer.parseInt(arguments[0]);
-					String firstName = arguments[1];
-					String lastName = arguments[2];
-					String phoneNumber = arguments[3];
-					Contact contact = ((DefaultListModel<Contact>)contacts.getModel()).get(index);
-					contact.setFirstName(firstName);
-					contact.setLastName(lastName);
-					contact.setPhoneNumber(phoneNumber);
-					((DefaultListModel<Contact>)contacts.getModel()).set(index, contact);
-					break;
-				} case "delete": {
-					int index = Integer.parseInt(arguments[0]);
-					((DefaultListModel<Contact>)contacts.getModel()).remove(index);
-
-					// Only change selected index if not recollecting
-					if(!recollecting) {
-						if(((DefaultListModel<Contact>)contacts.getModel()).getSize() > 0) {
-							int selectedIndex = Math.min(((DefaultListModel<Contact>)contacts.getModel()).getSize() - 1, index);
-							contacts.setSelectedIndex(selectedIndex);
-						}
-					}
-					break;
-				} case "START": {
-					recollecting = true;
-					System.out.println("Started recollecting...");
-					break;
-				} case "END": {
-					recollecting = false;
-					System.out.println("Finished recollecting.");
-					frame.setTitle(title);
-					frame.setEnabled(true);
-					break;
-				}
-				}
-			}
-		});
-		Client<String> client = server.newClient();
+		ContactListServer contactListServer = new ContactListServer(title, frame, contacts);
+		ClientServerFactory<String, ContactList> clientServerFactory = new StringRequestClientServerFactory<ContactList>(ContactList.class, contactListServer);
+		Server<String> server = clientServerFactory.createServer(memoizer);
+		ContactList contactListClient = clientServerFactory.createClient(server);
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events
@@ -136,7 +74,7 @@ public class Main {
 			
 			if(firstName.trim().length() > 0 && lastName.trim().length() > 0 && phoneNumber.trim().length() > 0) {
 				try {
-					client.put("new;" + firstName + ";" + lastName + ";" + phoneNumber);
+					contactListClient.add(firstName, lastName, phoneNumber);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -153,7 +91,7 @@ public class Main {
 
 				if(firstName.trim().length() > 0 && lastName.trim().length() > 0 && phoneNumber.trim().length() > 0) {
 					try {
-						client.put("update;" + selectedIndex + ";" + firstName + ";" + lastName + ";" + phoneNumber);
+						contactListClient.update("" + selectedIndex, firstName, lastName, phoneNumber);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -165,7 +103,7 @@ public class Main {
 			int selectedIndex = contacts.getSelectedIndex();
 			if(selectedIndex != -1) {
 				try {
-					client.put("delete;" + selectedIndex);
+					contactListClient.delete("" + selectedIndex);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -195,11 +133,11 @@ public class Main {
 		frame.setVisible(true);
 		frame.setTitle(title + " - Loading...");
 		
-		RunningServer<String> streamProcessor = RunningServer.start(server);
+		RunningServer<String> runningServer = RunningServer.start(server);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				streamProcessor.stop();
+				runningServer.stop();
 			}
 		});
 	}

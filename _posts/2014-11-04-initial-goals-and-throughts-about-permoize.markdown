@@ -17,7 +17,7 @@ In this example, `$readName` is used as a prefix for the `gets` expression which
 
 Calling this deterministic may be stretching the term's usual meaning too much but I hope the example and its purpose makes a little sense.
 
-Now, back to Permoize. The memoization construct in Duro is used as the main inspiration for building a simple Java library with the same purposes as summarized above. Instead of having memoization as an innate part of Java, a simple Java interface is designed and implemented. Here, the most important interface is `Memoizer`. Lets look at an example corresponding to the above example in Duro:
+Now, back to Permoize. The memoization construct in Duro is used as the main inspiration for building a simple Java library with the same purposes as summarized above. Instead of having memoization as an innate part of Java, a simple Java interface is designed and implemented. Here, the most important interface is `Memoizer`. Lets look at an example corresponding to the above example in Duro[^1]:
 
 ```Java
 Memoizer memoizer = ...; // Initialization of a Memoizer
@@ -29,3 +29,5 @@ puts(name);
 In this example, a Memoizer is initialized (somehow). In addition, the Memoizer.recollect method is invoked supplied with a name and a conditional producer of that particular value.
 
 So, how can Permoize be used for generel persistence in larger applications which are often event based which usually implies a push oriented architecture? This is an issue which is to be investigated further and will be part of future posts.
+
+[^1]: For a somewhat corresponding working example, look at [here](https://github.com/jakobehmsen/permoize/tree/master/eclipse/src/permoize/examples/getnput).

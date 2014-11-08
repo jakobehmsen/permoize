@@ -52,6 +52,6 @@ component.addSomeListener(e -> {
 RunningPuller<String> runningPuller = RunningPuller.start(puller);
 ```
 
-With likely less irelevant implementation details, Permoize's usage potential seems to becoming more suitable to more practical applications.
+With likely less irelevant implementation details, Permoize's usage potential seems to becoming more suitable to more practical applications. However, though the implicit push to request conversion and the request to pull conversion should improve usability, the solution still has some areas of improvement. E.g. a need to convert all argument into strings on the pushing side - and a restriction to only support String based parameters on the side of the puller.
 
 [^1]: For more details, take a look at [the extended contact list](https://github.com/jakobehmsen/permoize/tree/master/eclipse/src/permoize/examples/contactlistx).

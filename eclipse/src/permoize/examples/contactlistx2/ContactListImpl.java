@@ -36,8 +36,7 @@ public class ContactListImpl implements ContactList {
 	}
 
 	@Override
-	public void update(String indexAsString, String firstName, String lastName, String phoneNumber) {
-		int index = Integer.parseInt(indexAsString);
+	public void update(int index, String firstName, String lastName, String phoneNumber) {
 		Contact contact = ((DefaultListModel<Contact>)contacts.getModel()).get(index);
 		contact.setFirstName(firstName);
 		contact.setLastName(lastName);
@@ -46,9 +45,7 @@ public class ContactListImpl implements ContactList {
 	}
 
 	@Override
-	public void delete(String indexAsString) {
-		int index = Integer.parseInt(indexAsString);
-		
+	public void delete(int index) {
 		((DefaultListModel<Contact>)contacts.getModel()).remove(index);
 
 		// Only change selected index if not recollecting

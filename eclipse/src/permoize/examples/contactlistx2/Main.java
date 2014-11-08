@@ -31,8 +31,10 @@ public class Main {
 		// Create pusher
 		// - a "request stream processor", where each request is memoized
 		
-		byte[] start = "START".getBytes(); // Should be converted into method name, parameter types (empty array), arguments (empty array)
-		byte[] end = "END".getBytes();
+		byte[] start = SerializingRequestPusherPullerFactory.Util.invocationToRequest(
+			"START", new Class<?>[0], new Object[0]);
+		byte[] end = SerializingRequestPusherPullerFactory.Util.invocationToRequest(
+			"END", new Class<?>[0], new Object[0]);
 		
 		MemoizeContainer memoizeContainer = new StartEndMemoizeContainer(
 			start, end, new CommonMemoizeContainer(new StreamMemoizeEntryList("memoi.zer")));
@@ -44,7 +46,8 @@ public class Main {
 		contacts.setModel(new DefaultListModel<Contact>());
 		
 		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
-		PusherPullerFactory<byte[], ContactList> pusherPullerFactory = SerializingRequestPusherPullerFactory.create(ContactList.class, contactListImpl);
+		PusherPullerFactory<byte[], ContactList> pusherPullerFactory = 
+			SerializingRequestPusherPullerFactory.create(ContactList.class, contactListImpl);
 		Puller<byte[]> puller = pusherPullerFactory.createPuller(memoizer);
 		ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
 		
@@ -91,7 +94,7 @@ public class Main {
 
 				if(firstName.trim().length() > 0 && lastName.trim().length() > 0 && phoneNumber.trim().length() > 0) {
 					try {
-						contactListPusher.update("" + selectedIndex, firstName, lastName, phoneNumber);
+						contactListPusher.update(selectedIndex, firstName, lastName, phoneNumber);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -103,7 +106,7 @@ public class Main {
 			int selectedIndex = contacts.getSelectedIndex();
 			if(selectedIndex != -1) {
 				try {
-					contactListPusher.delete("" + selectedIndex);
+					contactListPusher.delete(selectedIndex);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

@@ -30,7 +30,7 @@ An illustration of an application of the abovementioned procedure is given below
 ```Java
 Memoizer memoizer = ...;
 ContactListImpl contactListImpl = ...;
-// MetaProtocol is a factory-like interface for constructing pushers and puller
+// MetaProtocol is a factory-like interface for constructing pushers and pullers.
 // In the below line, a new such factory is created given the interface ContactList
 // and an instance of its related implementer ContactListImpl.
 MetaProtocol<String, ContactList> metaProtocol = 

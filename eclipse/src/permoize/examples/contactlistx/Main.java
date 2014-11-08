@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import permoize.PusherPullerFactory;
+import permoize.MetaProtocol;
 import permoize.CommonMemoizeContainer;
 import permoize.CommonMemoizer;
 import permoize.MemoizeContainer;
@@ -24,7 +24,7 @@ import permoize.RunningPuller;
 import permoize.Puller;
 import permoize.StartEndMemoizeContainer;
 import permoize.StreamMemoizeEntryList;
-import permoize.StringRequestPusherPullerFactory;
+import permoize.StringRequestMetaProtocol;
 
 public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
@@ -44,7 +44,7 @@ public class Main {
 		contacts.setModel(new DefaultListModel<Contact>());
 		
 		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
-		PusherPullerFactory<String, ContactList> pusherPullerFactory = new StringRequestPusherPullerFactory<ContactList>(ContactList.class, contactListImpl);
+		MetaProtocol<String, ContactList> pusherPullerFactory = new StringRequestMetaProtocol<ContactList>(ContactList.class, contactListImpl);
 		Puller<String> puller = pusherPullerFactory.createPuller(memoizer);
 		ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
 		

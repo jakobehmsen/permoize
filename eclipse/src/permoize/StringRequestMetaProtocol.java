@@ -2,17 +2,17 @@ package permoize;
 
 import java.util.Arrays;
 
-public class StringRequestPusherPullerFactory<P> implements PusherPullerFactory<String, P> {
+public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 	private Class<P> protocol;
 	private P implementer;
 	
-	public StringRequestPusherPullerFactory(Class<P> protocol, P implementer) {
+	public StringRequestMetaProtocol(Class<P> protocol, P implementer) {
 		this.protocol = protocol;
 		this.implementer = implementer;
 	}
 	
-	public static <P> StringRequestPusherPullerFactory<P> create(Class<P> protocol, P implementer) {
-		return new StringRequestPusherPullerFactory<P>(protocol, implementer);
+	public static <P> StringRequestMetaProtocol<P> create(Class<P> protocol, P implementer) {
+		return new StringRequestMetaProtocol<P>(protocol, implementer);
 	}
 
 	@Override

@@ -15,14 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import permoize.PusherPullerFactory;
+import permoize.MetaProtocol;
 import permoize.CommonMemoizeContainer;
 import permoize.CommonMemoizer;
 import permoize.MemoizeContainer;
 import permoize.Memoizer;
 import permoize.RunningPuller;
 import permoize.Puller;
-import permoize.SerializingRequestPusherPullerFactory;
+import permoize.SerializingRequestMetaProtocol;
 import permoize.StartEndMemoizeContainer;
 import permoize.StreamMemoizeEntryList;
 
@@ -31,9 +31,9 @@ public class Main {
 		// Create pusher
 		// - a "request stream processor", where each request is memoized
 		
-		byte[] start = SerializingRequestPusherPullerFactory.Util.invocationToRequest(
+		byte[] start = SerializingRequestMetaProtocol.Util.invocationToRequest(
 			"START", new Class<?>[0], new Object[0]);
-		byte[] end = SerializingRequestPusherPullerFactory.Util.invocationToRequest(
+		byte[] end = SerializingRequestMetaProtocol.Util.invocationToRequest(
 			"END", new Class<?>[0], new Object[0]);
 		
 		MemoizeContainer memoizeContainer = new StartEndMemoizeContainer(
@@ -46,8 +46,8 @@ public class Main {
 		contacts.setModel(new DefaultListModel<Contact>());
 		
 		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
-		PusherPullerFactory<byte[], ContactList> pusherPullerFactory = 
-			SerializingRequestPusherPullerFactory.create(ContactList.class, contactListImpl);
+		MetaProtocol<byte[], ContactList> pusherPullerFactory = 
+			SerializingRequestMetaProtocol.create(ContactList.class, contactListImpl);
 		Puller<byte[]> puller = pusherPullerFactory.createPuller(memoizer);
 		ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
 		

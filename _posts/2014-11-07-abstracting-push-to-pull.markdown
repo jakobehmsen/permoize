@@ -30,13 +30,13 @@ An illustration of an application of the abovementioned procedure is given below
 ```Java
 Memoizer memoizer = ...;
 ContactListImpl contactListImpl = ...;
-// PusherPullerFactory is a utility interface for constructing pushers and puller
+// MetaProtocol is a factory-like interface for constructing pushers and puller
 // In the below line, a new such factory is created given the interface ContactList
 // and an instance of its related implementer ContactListImpl.
-PusherPullerFactory<String, ContactList> pusherPullerFactory = 
-	StringRequestPusherPullerFactory.create(ContactList.class, contactListImpl);
-Puller<String> puller = pusherPullerFactory.createPuller(memoizer);
-ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
+MetaProtocol<String, ContactList> metaProtocol = 
+	StringRequestMetaProtocol.create(ContactList.class, contactListImpl);
+Puller<String> puller = metaProtocol.createPuller(memoizer);
+ContactList contactListPusher = metaProtocol.createPusher(puller);
 
 // Usage of the pusher
 component.addSomeListener(e -> {

@@ -10,6 +10,10 @@ public class StringRequestPusherPullerFactory<P> implements PusherPullerFactory<
 		this.protocol = protocol;
 		this.implementer = implementer;
 	}
+	
+	public static <P> StringRequestPusherPullerFactory<P> create(Class<P> protocol, P implementer) {
+		return new StringRequestPusherPullerFactory<P>(protocol, implementer);
+	}
 
 	@Override
 	public Puller<String> createPuller(Memoizer memoizer) {

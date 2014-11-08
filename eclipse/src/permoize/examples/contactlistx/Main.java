@@ -44,9 +44,9 @@ public class Main {
 		contacts.setModel(new DefaultListModel<Contact>());
 		
 		ContactListImpl contactListImpl = new ContactListImpl(title, frame, contacts);
-		MetaProtocol<String, ContactList> pusherPullerFactory = new StringRequestMetaProtocol<ContactList>(ContactList.class, contactListImpl);
-		Puller<String> puller = pusherPullerFactory.createPuller(memoizer);
-		ContactList contactListPusher = pusherPullerFactory.createPusher(puller);
+		MetaProtocol<String, ContactList> metaProtocol = new StringRequestMetaProtocol<ContactList>(ContactList.class, contactListImpl);
+		Puller<String> puller = metaProtocol.createPuller(memoizer);
+		ContactList contactListPusher = metaProtocol.createPusher(puller);
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events

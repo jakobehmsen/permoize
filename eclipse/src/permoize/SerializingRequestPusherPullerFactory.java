@@ -2,10 +2,24 @@ package permoize;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class SerializingRequestPusherPullerFactory<P> implements PusherPullerFactory<byte[], P> {
+	public static class Util {
+		public static byte[] invocationToRequest(String methodName, Class<?>[] parameterTypes, Object[] arguments) throws IOException {
+			ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+            ObjectOutputStream objectsOut = new ObjectOutputStream(bytesOut);
+            
+            objectsOut.writeUTF(methodName);
+            objectsOut.writeObject(parameterTypes);
+            objectsOut.writeObject(arguments);
+            
+            return bytesOut.toByteArray();
+		}
+	}
+	
 	private Class<P> protocol;
 	private P implementer;
 	
@@ -40,6 +54,8 @@ public class SerializingRequestPusherPullerFactory<P> implements PusherPullerFac
 				try {
 					ByteArrayInputStream bytesIn = new ByteArrayInputStream(request);
 		            ObjectInputStream objectsIn = new ObjectInputStream(bytesIn);
+		            objectsIn.readUTF(); // Consume method name
+					objectsIn.readObject(); // Consume parameter types
 		            Object[] arguments = (Object[])objectsIn.readObject();
 
 					return arguments;
@@ -58,26 +74,11 @@ public class SerializingRequestPusherPullerFactory<P> implements PusherPullerFac
 		Pusher<byte[]> client = server.newClient();
 		return ReflectivePusher.create(protocol, client, (method, arguments) -> {
 			try {
-				ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-	            ObjectOutputStream objectsOut = new ObjectOutputStream(bytesOut);
-	            
-	            objectsOut.writeUTF(method.getName());
-	            objectsOut.writeObject(method.getParameterTypes());
-	            objectsOut.writeObject(arguments);
-	            
-	            return bytesOut.toByteArray();
+				return Util.invocationToRequest(method.getName(), method.getParameterTypes(), arguments);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				return null;
 			}
-			
-//			StringBuilder requestBuilder = new StringBuilder();
-//			requestBuilder.append(method.getName());
-//			for(Object arg: arguments) {
-//				requestBuilder.append(";");
-//				requestBuilder.append((String)arg);
-//			}
-//			return requestBuilder.toString();
 		});
 	}
 }

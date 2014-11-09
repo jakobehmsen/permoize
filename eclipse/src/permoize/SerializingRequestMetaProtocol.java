@@ -8,7 +8,8 @@ import java.io.ObjectOutputStream;
 
 public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P> {
 	public static class Util {
-		public static byte[] invocationToRequest(String methodName, Class<?>[] parameterTypes, Object[] arguments) throws IOException {
+		public static byte[] invocationToRequest(
+			String methodName, Class<?>[] parameterTypes, Object[] arguments) throws IOException {
 			ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
             ObjectOutputStream objectsOut = new ObjectOutputStream(bytesOut);
             

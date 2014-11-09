@@ -136,7 +136,7 @@ public class Main {
 		frame.setVisible(true);
 		frame.setTitle(title + " - Loading...");
 		
-		RunningPuller<byte[]> runningPuller = RunningPuller.start(puller);
+		RunningPuller runningPuller = RunningPuller.start(puller);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {

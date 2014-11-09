@@ -1,13 +1,13 @@
 package permoize;
 
-public class RunningPuller<T> {
+public class RunningPuller {
 	private Thread thread;
 	
 	private RunningPuller(Thread thread) {
 		this.thread = thread;
 	}
 	
-	public static <T> RunningPuller<T> start(Puller<T> puller) {
+	public static <T> RunningPuller start(Puller<T> puller) {
 		Thread thread = new Thread(() -> {
 			while(true) {
 				try {
@@ -22,7 +22,7 @@ public class RunningPuller<T> {
 			}
 		});
 		thread.start();
-		return new RunningPuller<T>(thread);
+		return new RunningPuller(thread);
 	}
 	
 	public void stop() {

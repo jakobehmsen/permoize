@@ -18,7 +18,7 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 	@Override
 	public Puller<String> createPuller(Memoizer memoizer) {
 		ServiceProvider<String> serviceProvider = new ReflectiveServiceProvider<P, String>(
-				implementer,
+			implementer,
 			(target, request) -> {
 				String[] requestSplit = request.split(";");
 				String methodName = requestSplit[0];

@@ -35,7 +35,7 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 	@Override
 	public Puller<byte[]> createPuller(Memoizer memoizer) {
 		ServiceProvider<byte[]> serviceProvider = new ReflectiveServiceProvider<P, byte[]>(
-				implementer,
+			implementer,
 			(target, request) -> {
 				try {
 					ByteArrayInputStream bytesIn = new ByteArrayInputStream(request);
@@ -53,10 +53,10 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 			request -> {
 				try {
 					ByteArrayInputStream bytesIn = new ByteArrayInputStream(request);
-		            ObjectInputStream objectsIn = new ObjectInputStream(bytesIn);
-		            objectsIn.readUTF(); // Consume method name
+					ObjectInputStream objectsIn = new ObjectInputStream(bytesIn);
+					objectsIn.readUTF(); // Consume method name
 					objectsIn.readObject(); // Consume parameter types
-		            Object[] arguments = (Object[])objectsIn.readObject();
+					Object[] arguments = (Object[])objectsIn.readObject();
 
 					return arguments;
 				} catch (Exception e1) {

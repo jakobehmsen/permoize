@@ -5,7 +5,7 @@ date:   2014-11-07 16:26:58
 categories: jekyll update
 ---
 
-While [Event handling - push to pull]({% post_url 2014-11-05-event-handling-push-to-pull %}) provided a suggestion for how to convert events from pushes to pulls, by separating an application into a puller- and a pusher component, the suggestion wasn't too practical and very little would be transferable to other applications. Lets look at some possible improvements of these components.
+While [Event handling - push to pull]({{site.baseurl}}{% post_url 2014-11-05-event-handling-push-to-pull %}) provided a suggestion for how to convert events from pushes to pulls, by separating an application into a puller- and a pusher component, the suggestion wasn't too practical and very little would be transferable to other applications. Lets look at some possible improvements of these components.
 
 The pusher can be improved for increasing reuse potential on multiple areas. First, the usage and interaction with threads can be hidden much better. Second, the processing of requests involves awkward extension requirements due to, e.g., the usage of a switch statement for routing of requests.
 

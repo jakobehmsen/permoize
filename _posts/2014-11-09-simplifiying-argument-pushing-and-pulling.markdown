@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Simplifying argument pushing and -pulling"
-date:   2014-11-07 16:26:58
+date:   2014-11-09 10:51:32
 categories: jekyll update
 ---
 

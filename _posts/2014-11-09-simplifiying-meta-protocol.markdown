@@ -45,7 +45,7 @@ RunningPuller runningPuller = metaPuller.start();
 
 The creation of the particular MetaProtocol becomes a tad more complex due to the usage of the `wrap` method - nonetheless the request type is expressed - that even being in an implicit sense. This seems like a positive tradeoff from an aggregate view.
 
-***WHAT NEXT?***
+Now, the contact list example applications consisted of a rather simple two level hierarchi, that being of a contact list entailing contacts. But what if one needed to represent more complicated interrelations, such as a three level hierachi? Say, an order catalog, order, and order line hierarchi? This could implicite a need to pass on requests in more indirect sense.
 
 [^1]: E.g. `String` or `byte[]`.
 [^2]: Such as `ContactList` in the case of (several of) the contact list applications in [examples](https://github.com/jakobehmsen/permoize/tree/master/eclipse/src/permoize/examples).

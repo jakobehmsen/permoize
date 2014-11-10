@@ -11,10 +11,10 @@ public class RunningPuller {
 		Thread thread = new Thread(() -> {
 			while(true) {
 				try {
-					System.out.println("Processing next...");
+//					System.out.println("Processing next...");
 					puller.processNext();
 				} catch (DontCollectException e) {
-					System.out.println("Stream processor stopped.");
+//					System.out.println("Stream processor stopped.");
 					break;
 				} catch (Exception e) {
 					e.printStackTrace();

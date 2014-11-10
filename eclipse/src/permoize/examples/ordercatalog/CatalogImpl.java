@@ -1,23 +1,57 @@
 package permoize.examples.ordercatalog;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
+import java.awt.BorderLayout;
 
-public class CatalogImpl implements Catalog {
-	private CatalogFrame frame;
-	private JList<Order> orders;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+public class CatalogImpl extends JFrame implements Catalog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final String title = "Order Catalog";
 	
-	public CatalogImpl(CatalogFrame frame, JList<Order> orders) {
-		this.frame = frame;
-		this.orders = orders;
+	private JList<Order> orders;
+	private JPanel topPanel = new JPanel();
+	
+	public CatalogImpl() {
+		orders = new JList<Order>();
+		orders.setModel(new DefaultListModel<Order>());
+		
+		setLayout(new BorderLayout());
+		
+		appendAction("New Order...", () -> { 
+			NewOrderFrame newOrderFrame = new NewOrderFrame();
+			newOrderFrame.setVisible(true);
+		});
+		
+		add(topPanel, BorderLayout.NORTH);
+		add(new JScrollPane(orders), BorderLayout.CENTER);
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 600);
+		setLocationRelativeTo(null);
+	}
+	
+	private void appendAction(String name, Runnable action) {
+		JButton button = new JButton(name);
+		button.addActionListener(e -> action.run());
+		topPanel.add(button);
 	}
 	
 	public void START() {
-		frame.showAsLoading();
+		setTitle(title + " - Loading...");
+		setEnabled(false);
 	}
 	
 	public void END() {
-		frame.showAsLoaded();
+		setTitle(title);
+		setEnabled(true);
 	}
 
 	@Override

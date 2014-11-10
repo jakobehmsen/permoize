@@ -33,11 +33,10 @@ public class Main {
 			start, end, new CommonMemoizeContainer(new StreamMemoizeEntryList("memoi.zer")));
 		Memoizer memoizer = new CommonMemoizer(memoizeContainer);
 
-		CatalogFrame frame = new CatalogFrame();
 		JList<Order> contacts = new JList<Order>();
 		contacts.setModel(new DefaultListModel<Order>());
 		
-		CatalogImpl contactListImpl = new CatalogImpl(frame, contacts);
+		CatalogImpl contactListImpl = new CatalogImpl();
 		MetaProtocolBuilder<Catalog> metaProtocol = SimpleMetaProtocolBuilder.wrap(
 			SerializingRequestMetaProtocol.create(Catalog.class, contactListImpl));
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
@@ -129,11 +128,12 @@ public class Main {
 //		frame.setTitle(title + " - Loading...");
 		
 		RunningPuller runningPuller = metaPuller.start();
-		frame.addWindowListener(new WindowAdapter() {
+		contactListImpl.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				runningPuller.stop();
 			}
 		});
+		contactListImpl.setVisible(true);
 	}
 }

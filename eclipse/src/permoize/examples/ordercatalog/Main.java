@@ -40,7 +40,8 @@ public class Main {
 		MetaProtocolBuilder<Catalog> metaProtocol = SimpleMetaProtocolBuilder.wrap(
 			SerializingRequestMetaProtocol.create(Catalog.class, contactListImpl));
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
-//		Catalog catalog = metaPuller.createPusher();
+		Catalog catalog = metaPuller.createPusher();
+		CatalogFrame catalogFrame = new CatalogFrame(catalog);
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events
@@ -128,12 +129,12 @@ public class Main {
 //		frame.setTitle(title + " - Loading...");
 		
 		RunningPuller runningPuller = metaPuller.start();
-		contactListImpl.addWindowListener(new WindowAdapter() {
+		catalogFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				runningPuller.stop();
 			}
 		});
-		contactListImpl.setVisible(true);
+		catalogFrame.setVisible(true);
 	}
 }

@@ -50,6 +50,8 @@ public class NewOrderFrame extends JDialog {
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(e -> {
+			// How to create and Order such that persistence is implicitly supported?
+			// Abstract instantiation? How to associate a pusher to an address?
 //			catalog.addOrder(order);
 			setVisible(false);
 		});

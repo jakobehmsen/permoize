@@ -37,7 +37,8 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 				String[] arguments = new String[requestSplit.length - 1];
 				System.arraycopy(requestSplit, 1, arguments, 0, arguments.length);
 				return arguments;
-			}
+			},
+			(target, request) -> target
 		);
 		
 		return new Puller<String>(memoizer, serviceProvider);
@@ -55,5 +56,11 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 			}
 			return requestBuilder.toString();
 		});
+	}
+	
+	@Override
+	public P createPusher(Address address, Puller<String> puller) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

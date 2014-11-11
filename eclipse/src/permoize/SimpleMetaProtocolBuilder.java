@@ -19,6 +19,11 @@ public class SimpleMetaProtocolBuilder<T, P> implements MetaProtocolBuilder<P> {
 			public P createPusher() {
 				return metaProtocol.createPusher(puller);
 			}
+			
+			@Override
+			public P createPusher(Address address) {
+				return metaProtocol.createPusher(address, puller);
+			}
 
 			@Override
 			public RunningPuller start() {

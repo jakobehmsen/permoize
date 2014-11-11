@@ -40,7 +40,7 @@ public class Main {
 		MetaProtocolBuilder<Catalog> metaProtocol = SimpleMetaProtocolBuilder.wrap(
 			SerializingRequestMetaProtocol.create(Catalog.class, contactListImpl));
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
-		Catalog catalog = metaPuller.createPusher();
+//		Catalog catalog = metaPuller.createPusher();
 		
 		// Create pusher
 		// - a Swing GUI through which the requests are made from events

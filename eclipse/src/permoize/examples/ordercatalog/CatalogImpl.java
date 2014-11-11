@@ -26,8 +26,8 @@ public class CatalogImpl extends JFrame implements Catalog {
 		setLayout(new BorderLayout());
 		
 		appendAction("New Order...", () -> { 
-			NewOrderFrame newOrderFrame = new NewOrderFrame();
-			newOrderFrame.setVisible(true);
+//			NewOrderFrame newOrderFrame = new NewOrderFrame(order -> orders);
+//			newOrderFrame.setVisible(true);
 		});
 		
 		add(topPanel, BorderLayout.NORTH);

@@ -1,6 +1,7 @@
 package permoize.examples.ordercatalog;
 
 import java.awt.BorderLayout;
+import java.util.function.Consumer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -19,7 +20,7 @@ public class NewOrderFrame extends JDialog {
 	private JList<Line> lines;
 	private JPanel topPanel = new JPanel();
 
-	public NewOrderFrame() {
+	public NewOrderFrame(Catalog catalog) {
 		lines = new JList<Line>();
 		lines.setModel(new DefaultListModel<Line>());
 		
@@ -33,7 +34,9 @@ public class NewOrderFrame extends JDialog {
 		*/
 		
 		appendAction("New Line...", () -> { 
-			NewLineFrame newLineFrame = new NewLineFrame();
+			NewLineFrame newLineFrame = new NewLineFrame(line -> {
+				((DefaultListModel<Line>)lines.getModel()).addElement(line);
+			});
 			newLineFrame.setVisible(true);
 		});
 		
@@ -42,6 +45,20 @@ public class NewOrderFrame extends JDialog {
 		
 		setTitle("New Order");
 		setModal(true);
+		
+		JPanel buttonPanel = new JPanel();
+		
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(e -> {
+//			catalog.addOrder(order);
+			setVisible(false);
+		});
+		buttonPanel.add(okButton);
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(e -> setVisible(false));
+		buttonPanel.add(cancelButton);
+		
+		add(buttonPanel);
 		
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(640, 480);

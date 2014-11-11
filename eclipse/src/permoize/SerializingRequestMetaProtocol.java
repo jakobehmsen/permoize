@@ -72,9 +72,9 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 	}
 
 	@Override
-	public P createPusher(Puller<byte[]> server) {
-		Pusher<byte[]> client = server.newClient();
-		return ReflectivePusher.create(protocol, client, (method, arguments) -> {
+	public P createPusher(Puller<byte[]> puller) {
+		Pusher<byte[]> client = puller.newClient();
+		return ReflectivePusher.create(protocol, implementer, client, (method, arguments) -> {
 			try {
 				return Util.invocationToRequest(method.getName(), method.getParameterTypes(), arguments);
 			} catch (Exception e1) {

@@ -44,9 +44,9 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 	}
 
 	@Override
-	public P createPusher(Puller<String> server) {
-		Pusher<String> client = server.newClient();
-		return ReflectivePusher.create(protocol, client, (method, arguments) -> {
+	public P createPusher(Puller<String> puller) {
+		Pusher<String> client = puller.newClient();
+		return ReflectivePusher.create(protocol, implementer, client, (method, arguments) -> {
 			StringBuilder requestBuilder = new StringBuilder();
 			requestBuilder.append(method.getName());
 			for(Object arg: arguments) {

@@ -8,10 +8,16 @@ public class ReflectivePusher {
 	private ReflectivePusher() { }
 	
 	@SuppressWarnings("unchecked")
-	public static <T, R> T create(Class<T> c, Pusher<R> puller, BiFunction<Method, Object[], R> requestResolver) {
+	public static <T, R> T create(Class<T> c, T implementer, Pusher<R> puller, BiFunction<Method, Object[], R> requestResolver) {
 		return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[]{c}, (proxy, method, args) -> {
-			R request = requestResolver.apply(method, args);
-			puller.put(request);
+			boolean isTransient = method.isAnnotationPresent(Transient.class);
+			
+			if(!isTransient) {
+				R request = requestResolver.apply(method, args);
+				puller.put(request);
+			} else {
+				method.invoke(implementer, args);
+			}
 			
 			return null;
 		});

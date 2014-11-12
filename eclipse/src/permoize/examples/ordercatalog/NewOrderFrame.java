@@ -52,6 +52,14 @@ public class NewOrderFrame extends JDialog {
 		okButton.addActionListener(e -> {
 			// How to create and Order such that persistence is implicitly supported?
 			// Abstract instantiation? How to associate a pusher to an address?
+			// The issue is a classic chicken and the egg issue:
+			// - To create a pusher order, an address has to be created
+			// - The order doesn't have an address before it has been added to the catalog
+			// Perhaps, the order should exists in a template catalog, where all the orders
+			// being created live until they've been committed or ignored?
+			// Then, should the address of the order change after it has been added to the
+			// catalog? If an address can change, why not have a direct address, when the order
+			// is being created, where requests sent to the order are not persisted.
 //			catalog.addOrder(order);
 			setVisible(false);
 		});

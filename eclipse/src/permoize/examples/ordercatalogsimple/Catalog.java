@@ -1,5 +1,6 @@
 package permoize.examples.ordercatalogsimple;
 
+import permoize.Creator;
 import permoize.Transient;
 
 public interface Catalog {
@@ -10,4 +11,6 @@ public interface Catalog {
 	void addListener(CatalogListener listener);
 	@Transient
 	void removeListener(CatalogListener listener);
+	@Creator
+	Order createOrder();
 }

@@ -43,4 +43,9 @@ public class CatalogImpl implements Catalog {
 	public void removeListener(CatalogListener listener) {
 		listeners.remove(listener);
 	}
+
+	@Override
+	public Order createOrder() {
+		return new OrderImpl();
+	}
 }

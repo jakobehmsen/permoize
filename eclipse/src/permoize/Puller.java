@@ -3,14 +3,12 @@ package permoize;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class Puller<T> {
+public abstract class Puller<T> {
 	private Memoizer memoizer;
-	private ServiceProvider<T> serviceProvider;
 	private BlockingQueue<T> requestStream = new LinkedBlockingDeque<T>();
 	
-	public Puller(Memoizer memoizer, ServiceProvider<T> serviceProvider) {
+	public Puller(Memoizer memoizer) {
 		this.memoizer = memoizer;
-		this.serviceProvider = serviceProvider;
 	}
 
 	public Pusher<T> newClient() {
@@ -28,6 +26,8 @@ public class Puller<T> {
 			}
 		});
 		
-		serviceProvider.serve(request);
+		serve(request);
 	}
+	
+	protected abstract void serve(T request);
 }

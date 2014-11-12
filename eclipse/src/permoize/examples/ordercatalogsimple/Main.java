@@ -72,7 +72,8 @@ public class Main {
 			
 			switch(selection) {
 			case 1:
-				return new AddOrderState(catalog);
+//				return new AddLineState(catalog);
+				return null;
 			case 2:
 				return new CatalogState(catalog);
 			case 3:
@@ -135,6 +136,8 @@ public class Main {
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
 		
 		Catalog catalog = metaPuller.createPusher();
+		Order order = catalog.createOrder(); // Somehow, the order should be implicitly wrapped around a proxy pusher
+		
 		RunningPuller runningPuller = metaPuller.start();
 		
 		State state = new CatalogState(catalog);

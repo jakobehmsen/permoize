@@ -17,8 +17,10 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 
 	@Override
 	public Puller<String> createPuller(Memoizer memoizer) {
-		ServiceProvider<String> serviceProvider = new ReflectiveServiceProvider<P, String>(
+		return new ReflectiveServiceProvider<P, String>(
+			memoizer,
 			implementer,
+			this,
 			(target, request) -> {
 				String[] requestSplit = request.split(";");
 				String methodName = requestSplit[0];
@@ -40,8 +42,6 @@ public class StringRequestMetaProtocol<P> implements MetaProtocol<String, P> {
 			},
 			(target, request) -> target
 		);
-		
-		return new Puller<String>(memoizer, serviceProvider);
 	}
 
 	@Override

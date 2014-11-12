@@ -43,8 +43,10 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 
 	@Override
 	public Puller<byte[]> createPuller(Memoizer memoizer) {
-		ServiceProvider<byte[]> serviceProvider = new ReflectiveServiceProvider<P, byte[]>(
+		return new ReflectiveServiceProvider<P, byte[]>(
+			memoizer,
 			implementer,
+			this,
 			(target, request) -> {
 				try {
 					ByteArrayInputStream bytesIn = new ByteArrayInputStream(request);
@@ -89,8 +91,6 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 				}
 			}
 		);
-		
-		return new Puller<byte[]>(memoizer, serviceProvider);
 	}
 
 	@Override

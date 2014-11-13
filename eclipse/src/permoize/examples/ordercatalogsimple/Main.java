@@ -136,7 +136,13 @@ public class Main {
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
 		
 		Catalog catalog = metaPuller.createPusher();
+		/*
+		Offset meta protocol?
+		*/
 		Order order = catalog.createOrder(); // Somehow, the order should be implicitly wrapped around a proxy pusher
+		
+		MetaProtocolBuilder<Order> metaProtocol2 = SimpleMetaProtocolBuilder.wrap(
+			SerializingRequestMetaProtocol.create(Order.class, new OrderImpl()));
 		
 		RunningPuller runningPuller = metaPuller.start();
 		

@@ -130,7 +130,7 @@ public class Main {
 		JList<Order> contacts = new JList<Order>();
 		contacts.setModel(new DefaultListModel<Order>());
 		
-		CatalogImpl contactListImpl = new CatalogImpl();
+		CatalogImpl contactListImpl = new CatalogImpl(); // This is the reference - how can it be accessed in builder?
 		MetaProtocolBuilder<Catalog> metaProtocol = SimpleMetaProtocolBuilder.wrap(
 			SerializingRequestMetaProtocol.create(Catalog.class, contactListImpl));
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);

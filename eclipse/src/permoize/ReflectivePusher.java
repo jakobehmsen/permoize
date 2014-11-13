@@ -22,6 +22,10 @@ public class ReflectivePusher {
 				} else {
 					Object result = method.invoke(implementer, args);
 					// Wrap result into some sort of builder proxy - how?
+					/*
+					What should the result be wrapped into? Some sort of builder that both collects and forwards messages
+					in an entirely transient sense
+					*/
 					return result;
 				}
 			} else {

@@ -24,20 +24,13 @@ public class ReflectiveServiceProvider<T, R> extends Puller<R> {
 	@Override
 	protected void serve(R request) {
 		Method method = methodResolver.apply(target, request);
-		boolean isCreator = method.isAnnotationPresent(Creator.class);
 		
 		Object[] args = argsResolver.apply(request);
 		Object targetForRequest = targetResolver.apply(target, request);
 		try {
 			method.invoke(targetForRequest, args);
-			
-			if(isCreator) {
-				// Wrap result into pusher
-				Address address = null; // How to derive the address?
-				metaProtocol.createPusher(address, this); // How support other than type of target?
-				// How to return the pusher?
-				// Is this the right direction? Can it be simpler?
-			}
+			Address address = null;
+			metaProtocol.createPusher(address, this);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}

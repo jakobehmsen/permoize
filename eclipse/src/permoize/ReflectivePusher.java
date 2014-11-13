@@ -13,13 +13,20 @@ public class ReflectivePusher {
 			boolean isTransient = method.isAnnotationPresent(Transient.class);
 			
 			if(!isTransient) {
-				R request = requestResolver.apply(method, args);
-				puller.put(request);
+				boolean isCreator = method.isAnnotationPresent(Creator.class);
+				if(!isCreator) {
+					R request = requestResolver.apply(method, args);
+					puller.put(request);
+					
+					return null;
+				} else {
+					Object result = method.invoke(implementer, args);
+					// Wrap result into some sort of builder proxy - how?
+					return result;
+				}
 			} else {
-				method.invoke(implementer, args);
+				return method.invoke(implementer, args);
 			}
-			
-			return null;
 		});
 	}
 }

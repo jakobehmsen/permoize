@@ -26,7 +26,7 @@ public class ReflectivePusher {
 					What should the result be wrapped into? Some sort of builder that both collects and forwards messages
 					in an entirely transient sense
 					*/
-					return result;
+					return Builder.create(method.getReturnType(), result);
 				}
 			} else {
 				return method.invoke(implementer, args);

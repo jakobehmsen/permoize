@@ -26,6 +26,7 @@ public class ReflectiveServiceProvider<T, R> extends Puller<R> {
 		Method method = methodResolver.apply(target, request);
 		
 		Object[] args = argsResolver.apply(request);
+		// If an argument is a builder, then something special should happen...
 		Object targetForRequest = targetResolver.apply(target, request);
 		try {
 			method.invoke(targetForRequest, args);

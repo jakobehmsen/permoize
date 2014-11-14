@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface Builder {
 	List<Invocation> getInvocations();
+	boolean isPersistent();
 	
 	public static Object create(Class<?> c, Object target) {
 		ArrayList<Invocation> invocations = new ArrayList<Invocation>();

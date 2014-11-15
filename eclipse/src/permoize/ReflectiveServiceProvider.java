@@ -26,17 +26,19 @@ public class ReflectiveServiceProvider<T, R> extends Puller<R> {
 		Method method = methodResolver.apply(target, request);
 		
 		Object[] args = argsResolver.apply(request);
+		
+		Object targetForRequest = targetResolver.apply(target, request);
+		
 		// If an argument is a builder, then something special should happen...
 		// - its creation should be replayed (if necessary)
 		for(int i = 0; i < args.length; i++) {
 			Object arg = args[i];
 			if(arg instanceof Builder) {
 				Builder builderArg = (Builder)arg;
-				
+				builderArg.build(targetForRequest);
 			}
 		}
 		
-		Object targetForRequest = targetResolver.apply(target, request);
 		try {
 			method.invoke(targetForRequest, args);
 			Address address = null;

@@ -1,14 +1,84 @@
 package permoize;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.List;
 
 public interface Builder {
-	List<Invocation> getInvocations();
-	boolean isPersistent();
+	void build(Object reference);
 	
-	public static Object create(Class<?> c, Object target) {
+	public static class BuilderInvocationHandler implements InvocationHandler, Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		private static final int STATE_TRANSIENT = 0;
+		private static final int STATE_PERSISTENT_LOADED = 1;
+		private static final int STATE_PERSISTENT_UNLOADED = 2;
+		
+		private int state;
+		private Invocation creation;
+		private Object target;
+		private ArrayList<Invocation> invocations = new ArrayList<Invocation>();
+
+		public BuilderInvocationHandler(Invocation creation, Object target) {
+			this.creation = creation;
+			this.target = target;
+		}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			if(method.getDeclaringClass() == Builder.class && method.getName().equals("build")) {
+				switch(state) {
+				case STATE_TRANSIENT:
+					// Should something happen here for this state transition?
+					
+					state = STATE_PERSISTENT_LOADED;
+					break;
+				case STATE_PERSISTENT_UNLOADED:
+					// Build 
+					Object reference = args[0];
+					
+					// Create base target from reference
+					target = creation.invoke(reference);
+					
+					for(Invocation invocation: invocations)
+						invocation.invoke(target);
+					
+					state = STATE_PERSISTENT_LOADED;
+				case STATE_PERSISTENT_LOADED:
+					break;
+				}
+				return null;
+			} else {
+				invocations.add(new Invocation(method, args));
+				return method.invoke(target, args);
+			}
+		}
+		
+		@SuppressWarnings("unchecked")
+		private void readObject(ObjectInputStream inputStream) throws ClassNotFoundException, IOException {
+			creation = (Invocation)inputStream.readObject();
+			invocations = (ArrayList<Invocation>)inputStream.readObject();
+			state = STATE_PERSISTENT_UNLOADED;
+		}
+
+		private void writeObject(ObjectOutputStream outputStream) throws IOException {
+			outputStream.writeObject(creation);
+			outputStream.writeObject(invocations);
+		}
+	}
+	
+	public static Object create(Class<?> c, Invocation creation, Object target) {
+		if(1 != 2)
+			return Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[]{c, Builder.class}, new BuilderInvocationHandler(creation, target));
+		
 		ArrayList<Invocation> invocations = new ArrayList<Invocation>();
 		
 		return Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[]{c, Builder.class}, (proxy, method, args) -> {

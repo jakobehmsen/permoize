@@ -1,11 +1,13 @@
 package permoize.examples.ordercatalogsimple;
 
+import java.util.ArrayList;
+
 public class OrderImpl implements Order {
+	private ArrayList<Line> lines = new ArrayList<Line>();
 
 	@Override
 	public void addLine(Line line) {
-		// TODO Auto-generated method stub
-		
+		lines.add(line);
 	}
 
 	@Override
@@ -19,5 +21,4 @@ public class OrderImpl implements Order {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

@@ -1,6 +1,12 @@
 package permoize.examples.ordercatalogsimple;
 
-public class Line {
+import java.io.Serializable;
+
+public class Line implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String item;
 	private int amount;
 	

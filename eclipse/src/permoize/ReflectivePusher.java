@@ -15,18 +15,6 @@ public class ReflectivePusher {
 			if(!isTransient) {
 				boolean isCreator = method.isAnnotationPresent(Creator.class);
 				if(!isCreator) {
-					// If an argument is a builder, then something special should happen...
-					for(int i = 0; i < args.length; i++) {
-						Object arg = args[i];
-						if(arg instanceof Builder) {
-							Builder builderArg = (Builder)arg;
-							// Somehow, the builder should be bound to the request
-							// The args are bound to the request...
-							// So, when a builder is serialized, it should be serialized in such
-							// a way that when it is read, then it somehow recreates itself... How? Where?
-						}
-					}
-					
 					R request = requestResolver.apply(method, args);
 					puller.put(request);
 					
@@ -38,7 +26,7 @@ public class ReflectivePusher {
 					What should the result be wrapped into? Some sort of builder that both collects and forwards messages
 					in an entirely transient sense
 					*/
-					return Builder.create(method.getReturnType(), result);
+					return Builder.create(method.getReturnType(), new Invocation(method, args), result);
 				}
 			} else {
 				return method.invoke(implementer, args);

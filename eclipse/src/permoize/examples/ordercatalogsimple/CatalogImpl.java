@@ -48,4 +48,9 @@ public class CatalogImpl implements Catalog {
 	public Order createOrder() {
 		return new OrderImpl();
 	}
+	
+	@Override
+	public Line createLine() {
+		return new LineImpl();
+	}
 }

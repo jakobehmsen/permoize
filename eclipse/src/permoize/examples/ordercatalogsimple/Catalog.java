@@ -13,4 +13,6 @@ public interface Catalog {
 	void removeListener(CatalogListener listener);
 	@Creator
 	Order createOrder();
+	@Creator
+	Line createLine();
 }

@@ -136,17 +136,39 @@ public class Main {
 		MetaPuller<Catalog> metaPuller = metaProtocol.createPuller(memoizer);
 		
 		Catalog catalog = metaPuller.createPusher();
+		catalog.addListener(new CatalogListener() {
+			@Override
+			public void startedLoading() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void finishedLoading() {
+				catalog.toString();
+			}
+			
+			@Override
+			public void addedOrder(Order order) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		/*
 		Offset meta protocol?
 		*/
 		
-		MetaProtocolBuilder<Order> metaProtocol2 = SimpleMetaProtocolBuilder.wrap(
-			SerializingRequestMetaProtocol.create(Order.class, new OrderImpl()));
+//		MetaProtocolBuilder<Order> metaProtocol2 = SimpleMetaProtocolBuilder.wrap(
+//			SerializingRequestMetaProtocol.create(Order.class, new OrderImpl()));
 		
 		RunningPuller runningPuller = metaPuller.start();
 		
 //		Order order = catalog.createOrder(); // Somehow, the order should be implicitly wrapped around a proxy pusher
-//		order.addLine(new Line("Ice cream", 20));
+//		
+//		Line line = catalog.createLine();
+//		line.setItem("Ice cream");
+//		line.setAmount(20);
+//		order.addLine(line);
 //		
 //		catalog.addOrder(order);
 		

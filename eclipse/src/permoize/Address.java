@@ -25,4 +25,17 @@ public interface Address extends Serializable {
 	}
 	
 	Object resolveFrom(Object reference);
+	default Address combinedWith(Address other) {
+		return new Address() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Object resolveFrom(Object reference) {
+				return other.resolveFrom(this.resolveFrom(reference));
+			}
+		};
+	}
 }

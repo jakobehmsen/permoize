@@ -23,4 +23,9 @@ public class LineImpl implements Line {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+
+	@Override
+	public String toString() {
+		return "[item=" + item + ", amount=" + amount + "]";
+	}
 }

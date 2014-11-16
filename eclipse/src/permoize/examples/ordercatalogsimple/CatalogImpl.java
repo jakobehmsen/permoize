@@ -53,4 +53,9 @@ public class CatalogImpl implements Catalog {
 	public Line createLine() {
 		return new LineImpl();
 	}
+	
+	@Override
+	public String toString() {
+		return orders.toString();
+	}
 }

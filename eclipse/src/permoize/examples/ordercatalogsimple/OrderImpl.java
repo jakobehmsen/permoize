@@ -21,4 +21,9 @@ public class OrderImpl implements Order {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		return lines.toString();
+	}
 }

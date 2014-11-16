@@ -145,7 +145,8 @@ public class Main {
 			
 			@Override
 			public void finishedLoading() {
-				catalog.toString();
+				String str = catalog.toString();
+				System.out.println(str);
 			}
 			
 			@Override
@@ -166,8 +167,8 @@ public class Main {
 //		Order order = catalog.createOrder(); // Somehow, the order should be implicitly wrapped around a proxy pusher
 //		
 //		Line line = catalog.createLine();
-//		line.setItem("Ice cream");
-//		line.setAmount(20);
+//		line.setItem("Butter");
+//		line.setAmount(15);
 //		order.addLine(line);
 //		
 //		catalog.addOrder(order);

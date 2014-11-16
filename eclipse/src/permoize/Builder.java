@@ -46,10 +46,15 @@ public interface Builder {
 					Object reference = args[0];
 					
 					// Create base target from reference
-					target = creation.invoke(reference);
+					// How to derive the correct target of creation here?
+					// For instance, when creating a line off of an order, which itself has been created
+					// from a catalog. In this case, a catalog is supplied as a reference here.
+					// - then, how should the order be derived?
+					// Should a dedicated factory be used?
+					target = creation.invoke(reference, reference);
 					
 					for(Invocation invocation: invocations)
-						invocation.invoke(target);
+						invocation.invoke(reference, target);
 					
 					state = STATE_PERSISTENT_LOADED;
 				case STATE_PERSISTENT_LOADED:
@@ -57,8 +62,45 @@ public interface Builder {
 				}
 				return null;
 			} else {
-				invocations.add(new Invocation(method, args));
-				return method.invoke(target, args);
+				if(state == STATE_TRANSIENT) {
+					boolean isCreator = method.isAnnotationPresent(Creator.class);
+					if(!isCreator) {
+						invocations.add(new Invocation(method, args));
+						return method.invoke(target, args);
+					} else {
+						Object result = method.invoke(target, args);
+						// Wrap result into some sort of builder proxy - how?
+						/*
+						What should the result be wrapped into? Some sort of builder that both collects and forwards messages
+						in an entirely transient sense
+						*/
+						return Builder.create(method.getReturnType(), new Invocation(method, args), result);
+					}
+				} else {
+//					boolean isTransient = method.isAnnotationPresent(Transient.class);
+//					
+//					if(!isTransient) {
+//						boolean isCreator = method.isAnnotationPresent(Creator.class);
+//						if(!isCreator) {
+//							R request = requestResolver.apply(method, args);
+//							puller.put(request);
+//							
+//							return null;
+//						} else {
+//							Object result = method.invoke(target, args);
+//							// Wrap result into some sort of builder proxy - how?
+//							/*
+//							What should the result be wrapped into? Some sort of builder that both collects and forwards messages
+//							in an entirely transient sense
+//							*/
+//							return Builder.create(method.getReturnType(), new Invocation(method, args), result);
+//						}
+//					} else {
+//						return method.invoke(target, args);
+//					}
+					
+					return null;
+				}
 			}
 		}
 		

@@ -6,9 +6,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
-public class Invocation implements Serializable {
+public class Invocation implements Serializable, Address {
 	/**
 	 * 
 	 */
@@ -22,7 +21,17 @@ public class Invocation implements Serializable {
 		this.args = args;
 	}
 
-	public Object invoke(Object obj) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object invoke(Object reference, Object obj) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(args != null) {
+			for(int i = 0; i < args.length; i++) {
+				Object arg = args[i];
+				if(arg instanceof Builder) {
+					Builder builderArg = (Builder)arg;
+					builderArg.build(reference);
+				}
+			}
+		}
+		
 		return method.invoke(obj, args);
 	}
 	
@@ -45,5 +54,15 @@ public class Invocation implements Serializable {
 		outputStream.writeUTF(method.getName());
 		outputStream.writeObject(method.getParameterTypes());
 		outputStream.writeObject(args);
+	}
+
+	@Override
+	public Object resolveFrom(Object reference) {
+		try {
+			return invoke(reference, reference);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

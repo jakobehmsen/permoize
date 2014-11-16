@@ -63,19 +63,12 @@ public interface Builder {
 				return null;
 			} else {
 				if(state == STATE_TRANSIENT) {
-					boolean isCreator = method.isAnnotationPresent(Creator.class);
-					if(!isCreator) {
+					boolean memoize = method.isAnnotationPresent(Memoize.class);
+					
+					if(memoize)
 						invocations.add(new Invocation(method, args));
-						return method.invoke(target, args);
-					} else {
-						Object result = method.invoke(target, args);
-						// Wrap result into some sort of builder proxy - how?
-						/*
-						What should the result be wrapped into? Some sort of builder that both collects and forwards messages
-						in an entirely transient sense
-						*/
-						return Builder.create(method.getReturnType(), new Invocation(method, args), result);
-					}
+					
+					return method.invoke(target, args);
 				} else {
 //					boolean isTransient = method.isAnnotationPresent(Transient.class);
 //					
@@ -99,7 +92,7 @@ public interface Builder {
 //						return method.invoke(target, args);
 //					}
 					
-					return null;
+					return method.invoke(target, args);
 				}
 			}
 		}

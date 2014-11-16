@@ -10,15 +10,17 @@ public class ReflectivePusher {
 	@SuppressWarnings("unchecked")
 	public static <T, R> T create(Class<T> c, T implementer, Pusher<R> puller, BiFunction<Method, Object[], R> requestResolver) {
 		return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[]{c}, (proxy, method, args) -> {
-			boolean isTransient = method.isAnnotationPresent(Transient.class);
+			boolean memoize = method.isAnnotationPresent(Memoize.class);
 			
-			if(!isTransient) {
+			if(memoize) {
+				R request = requestResolver.apply(method, args);
+				puller.put(request);
+				
+				return null;
+			} else {
 				boolean isCreator = method.isAnnotationPresent(Creator.class);
 				if(!isCreator) {
-					R request = requestResolver.apply(method, args);
-					puller.put(request);
-					
-					return null;
+					return method.invoke(implementer, args);
 				} else {
 					Object result = method.invoke(implementer, args);
 					// Wrap result into some sort of builder proxy - how?
@@ -28,8 +30,6 @@ public class ReflectivePusher {
 					*/
 					return Builder.create(method.getReturnType(), new Invocation(method, args), result);
 				}
-			} else {
-				return method.invoke(implementer, args);
 			}
 		});
 	}

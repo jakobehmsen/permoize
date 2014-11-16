@@ -2,7 +2,6 @@ package permoize.examples.ordercatalogsimple;
 
 import permoize.Creator;
 import permoize.Memoize;
-import permoize.Transient;
 
 public interface Catalog {
 	@Memoize

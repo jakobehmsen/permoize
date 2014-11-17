@@ -35,7 +35,9 @@ public class ReflectiveServiceProvider<T, R> extends Puller<R> {
 			Object arg = args[i];
 			if(arg instanceof Builder) {
 				Builder builderArg = (Builder)arg;
-				builderArg.build(targetForRequest);
+				builderArg.build(targetForRequest, (methodR, argsR) -> {
+					
+				});
 			}
 		}
 		

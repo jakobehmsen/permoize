@@ -2,6 +2,8 @@ package permoize;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.function.BiConsumer;
 
 public interface Address extends Serializable {
 	public static class Reference implements Address {
@@ -15,7 +17,7 @@ public interface Address extends Serializable {
 		private Reference() { }
 
 		@Override
-		public Object resolveFrom(Object reference) {
+		public Object resolveFrom(Object reference, BiConsumer<Method, Object[]> invocationConsumer) {
 			return reference;
 		}
 		
@@ -24,7 +26,7 @@ public interface Address extends Serializable {
 		}
 	}
 	
-	Object resolveFrom(Object reference);
+	Object resolveFrom(Object reference, BiConsumer<Method, Object[]> invocationConsumer);
 	default Address combinedWith(Address other) {
 		return new Address() {
 			/**
@@ -33,8 +35,8 @@ public interface Address extends Serializable {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Object resolveFrom(Object reference) {
-				return other.resolveFrom(this.resolveFrom(reference));
+			public Object resolveFrom(Object reference, BiConsumer<Method, Object[]> invocationConsumer) {
+				return other.resolveFrom(this.resolveFrom(reference, invocationConsumer), invocationConsumer);
 			}
 		};
 	}

@@ -10,5 +10,9 @@ public class SerializingRequest implements Serializable {
 
 	/*
 	Instances should somehow represent both a play context and a replay context.
+	
+	These requests will, more or less, represent invocations, where each of the arguments
+	may be a "complex" object for which references must be maintained - both transiently
+	and persistently.
 	*/
 }

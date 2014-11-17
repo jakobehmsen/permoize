@@ -8,9 +8,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 
 public interface Builder {
-	void build(Object reference);
+	void build(Object reference, BiConsumer<Method, Object[]> invocationConsumer);
 	
 	public static class BuilderInvocationHandler implements InvocationHandler, Serializable {
 		/**
@@ -26,12 +27,15 @@ public interface Builder {
 		private Invocation creation;
 		private Object target;
 		private ArrayList<Invocation> invocations = new ArrayList<Invocation>();
+		
+		private BiConsumer<Method, Object[]> invocationConsumer;
 
 		public BuilderInvocationHandler(Invocation creation, Object target) {
 			this.creation = creation;
 			this.target = target;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			if(method.getDeclaringClass() == Builder.class && method.getName().equals("build")) {
@@ -44,6 +48,7 @@ public interface Builder {
 				case STATE_PERSISTENT_UNLOADED:
 					// Build 
 					Object reference = args[0];
+					invocationConsumer = (BiConsumer<Method, Object[]>)args[1];
 					
 					// Create base target from reference
 					// How to derive the correct target of creation here?
@@ -51,10 +56,10 @@ public interface Builder {
 					// from a catalog. In this case, a catalog is supplied as a reference here.
 					// - then, how should the order be derived?
 					// Should a dedicated factory be used?
-					target = creation.invoke(reference, reference);
+					target = creation.invoke(reference, reference, invocationConsumer);
 					
 					for(Invocation invocation: invocations)
-						invocation.invoke(reference, target);
+						invocation.invoke(reference, target, invocationConsumer);
 					
 					state = STATE_PERSISTENT_LOADED;
 				case STATE_PERSISTENT_LOADED:
@@ -70,29 +75,31 @@ public interface Builder {
 					
 					return method.invoke(target, args);
 				} else {
-//					boolean isTransient = method.isAnnotationPresent(Transient.class);
-//					
-//					if(!isTransient) {
-//						boolean isCreator = method.isAnnotationPresent(Creator.class);
-//						if(!isCreator) {
-//							R request = requestResolver.apply(method, args);
-//							puller.put(request);
-//							
-//							return null;
-//						} else {
-//							Object result = method.invoke(target, args);
-//							// Wrap result into some sort of builder proxy - how?
-//							/*
-//							What should the result be wrapped into? Some sort of builder that both collects and forwards messages
-//							in an entirely transient sense
-//							*/
-//							return Builder.create(method.getReturnType(), new Invocation(method, args), result);
-//						}
-//					} else {
-//						return method.invoke(target, args);
-//					}
+					boolean memoize = method.isAnnotationPresent(Memoize.class);
 					
-					return method.invoke(target, args);
+					if(memoize) {
+//						R request = requestResolver.apply(method, args);
+//						puller.put(request);
+						
+						invocationConsumer.accept(method, args);
+						
+						return null;
+					} else {
+						boolean isCreator = method.isAnnotationPresent(Creator.class);
+						if(!isCreator) {
+							return method.invoke(target, args);
+						} else {
+							Object result = method.invoke(target, args);
+							// Wrap result into some sort of builder proxy - how?
+							/*
+							What should the result be wrapped into? Some sort of builder that both collects and forwards messages
+							in an entirely transient sense
+							*/
+							return Builder.create(method.getReturnType(), new Invocation(method, args), result);
+						}
+					}
+					
+//					return method.invoke(target, args);
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.BiConsumer;
 
 public class Invocation implements Serializable, Address {
 	/**
@@ -21,13 +22,13 @@ public class Invocation implements Serializable, Address {
 		this.args = args;
 	}
 
-	public Object invoke(Object reference, Object obj) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object invoke(Object reference, Object obj, BiConsumer<Method, Object[]> invocationConsumer) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if(args != null) {
 			for(int i = 0; i < args.length; i++) {
 				Object arg = args[i];
 				if(arg instanceof Builder) {
 					Builder builderArg = (Builder)arg;
-					builderArg.build(reference);
+					builderArg.build(reference, invocationConsumer);
 				}
 			}
 		}
@@ -57,9 +58,9 @@ public class Invocation implements Serializable, Address {
 	}
 
 	@Override
-	public Object resolveFrom(Object reference) {
+	public Object resolveFrom(Object reference, BiConsumer<Method, Object[]> invocationConsumer) {
 		try {
-			return invoke(reference, reference);
+			return invoke(reference, reference, invocationConsumer);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;

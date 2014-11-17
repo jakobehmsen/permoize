@@ -84,7 +84,7 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 					objectsIn.readObject(); // Consume arguments
 					Address address = (Address)objectsIn.readObject();
 					
-					return address.resolveFrom(target);
+					return address.resolveFrom(target, null);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					return null;
@@ -100,6 +100,11 @@ public class SerializingRequestMetaProtocol<P> implements MetaProtocol<byte[], P
 	
 	@Override
 	public P createPusher(Address address, Puller<byte[]> puller) {
+		// The type to be interchanged among pushers and pullers should be two-faced:
+		// The first is initial plays, where it is important to maintain references to arguments, i.e. no transformation to byte[]'s occur
+		// - This is important, e.g., when creating a new order of a catalog, which is immediately added followed by further interacting with
+		//   the newly created and added order, such as adding lines the "persistent" order.
+		// The second is for replays, where serializing is used
 		Pusher<byte[]> client = puller.newClient();
 		return ReflectivePusher.create(protocol, implementer, client, (method, arguments) -> {
 			try {
